@@ -1,0 +1,400 @@
+{% extends 'ShoppingApp/base.html' %}
+{% block breadcrumbs %}
+    {#    <script type="text/javascript">#}
+    {#        try {#}
+    {#            ace.settings.check('breadcrumbs', 'fixed')#}
+    {#        } catch (e) {#}
+    {#        }#}
+    {#    </script>#}
+
+    <ul class="breadcrumb">
+        <li class="active"><i class="ace-icon fa fa-home home-icon"></i>Home</li>
+    </ul><!-- /.breadcrumb -->
+
+
+{% endblock %}
+{% block page-content %}
+    <div class="container-fluid">
+        <div class="l-main-content" style="padding: 0px">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-9">
+                        <div class="section-goods">
+
+                            <div class="col-12" v-for="(data,index) in dataList">
+                                <div class="b-goods b-goods_list b-goods_back_sm">
+                                    <button class="flip-btn"><span></span><span
+                                            class="flip-btn-mdl"></span><span></span></button>
+                                    <div class="flip-container">
+                                        <div class="flipper">
+                                            <div class="flip__front">
+                                                <div class="b-goods__img"><img class="img-scale" style="height: 220px"
+                                                                               :src="data.image" alt="foto"/>
+                                                </div>
+                                                <div class="b-goods__inner">
+                                                    <div class="b-goods__header">
+                                                        <div class="b-goods__name">[[data.name]]</div>
+                                                        <ul class="ui-rating list-unstyled">
+                                                            <li class="active"><i class="fas fa-star"></i></li>
+                                                            <li class="active"><i class="fas fa-star"></i></li>
+                                                            <li class="active"><i class="fas fa-star"></i></li>
+                                                            <li class="active"><i class="fas fa-star"></i></li>
+                                                            <li class="active"><i class="fas fa-star"></i></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="b-goods__footer">
+                                                        <div class="b-goods__price">
+                                                            <div class="b-goods__price-main bg-primary">
+                                                                [[data.price]]w
+                                                            </div>
+                                                            <div class="b-goods__price-msrp">
+                                                                MSRP: [[data.oldPrice]]w
+                                                            </div>
+                                                        </div>
+                                                        <br/>
+                                                        <ul class="b-goods-descr list-unstyled">
+                                                            <li class="b-goods-descr__item">[[data.year]]</li>
+                                                            <li class="b-goods-descr__item">[[data.gearbox]]</li>
+                                                            <li class="b-goods-descr__item">#[[data.fuel ]]</li>
+                                                            <li class="b-goods-descr__item">[[data.horsepower ]]hp</li>
+                                                            <li class="b-goods-descr__item"><a
+                                                                    @click="createBill(data)">Buy</a></li>
+                                                            <li class="b-goods-descr__item"><a
+                                                                    @click="addCar(data)">Add to Favourite</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flip__back">
+                                                <div class="b-goods__header">
+                                                    <div class="b-goods__name">[[data.name]]</div>
+                                                    <div class="flip-btn-hide"></div>
+                                                </div>
+                                                <div class="b-goods-info">
+                                                    <div class="b-goods-info__item row no-gutters justify-content-between">
+                                                        <span class="b-goods-info__title col-auto">Cruise Control Option</span><span
+                                                            class="b-goods-info__desc col-auto">Standard</span>
+                                                    </div>
+                                                    <div class="b-goods-info__item row no-gutters justify-content-between">
+                                                        <span class="b-goods-info__title col-auto">Transmission</span><span
+                                                            class="b-goods-info__desc col-auto">[[data.gearbox]]</span>
+                                                    </div>
+                                                    <div class="b-goods-info__item row no-gutters justify-content-between">
+                                                        <span class="b-goods-info__title col-auto">Mileage</span><span
+                                                            class="b-goods-info__desc col-auto">[[data.mileage ]]wkm</span>
+                                                    </div>
+                                                    <div class="b-goods-info__item row no-gutters justify-content-between">
+                                                        <span class="b-goods-info__title col-auto">Engine / Fuel Capacity</span><span
+                                                            class="b-goods-info__desc col-auto">[[data.volume ]]L</span>
+                                                    </div>
+                                                </div>
+                                                <div class="flip__footer">
+                                                    <button class="btn btn-primary btn-lg w-100">Reserve now
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end .b-goods-->
+                            </div>
+
+
+                        </div>
+                        <pageination :total="model.total" :size="model.size" :page="model.page"
+                                     :changge="pageFn"></pageination>
+                    </div>
+                    <div class="col-md-3">
+                        <aside class="l-sidebar">
+                            <div class="widget section-sidebar bg-gray">
+                                <h3 class="widget-title bg-dark row justify-content-between align-items-center no-gutters">
+                                    <i class="ic flaticon-porsche bg-primary col-auto"></i><span
+                                        class="widget-title__inner col">Search Filters</span></h3><a id="keyList">
+                                <div class="widget-content">
+                                    <div class="widget-inner">
+
+                                        <div class="b-filter__main">
+                                            <div class="b-filter__row">
+                                                <select class="form-control" id="form-field-select-1"
+                                                        v-model="brand">
+                                                    <option value="">Brand</option>
+                                                    {% for item in brandList %}
+                                                        <option value="{{ item.brand }}">{{ item.brand }}</option>
+                                                    {% endfor %}
+
+                                                </select>
+                                            </div>
+                                            <div class="b-filter__row">
+                                                <select class="form-control" id="form-field-select-2"
+                                                        v-model="volume">
+                                                    <option value="">Volume</option>
+                                                    {% for item in volumeList %}
+                                                        <option value="{{ item.volume }}">{{ item.volume }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="b-filter__row">
+                                                <select class="form-control" id="form-field-select-2"
+                                                        v-model="gearbox">
+                                                    <option value="">GearBox</option>
+                                                    {% for item in gearboxList %}
+                                                        <option value="{{ item.gearbox }}">{{ item.gearbox }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+
+                                            <div class="b-filter__row">
+                                                <select class="form-control" id="form-field-select-2"
+                                                        v-model="year">
+                                                    <option value="">Year</option>
+                                                    {% for item in yearList %}
+                                                        <option value="{{ item.year }}">{{ item.year }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+{#                                            <div class="b-filter__row">#}
+{#                                                <select class="form-control" id="form-field-select-2"#}
+{#                                                        v-model="age">#}
+{#                                                    <option value="">Age</option>#}
+{#                                                    {% for item in ageList %}#}
+{#                                                        <option value="{{ item.age }}">{{ item.age }}</option>#}
+{#                                                    {% endfor %}#}
+{#                                                </select>#}
+{#                                            </div>#}
+
+                                            <div class="b-filter__row">
+                                                <select class="form-control" id="form-field-select-2"
+                                                        v-model="fuel">
+                                                    <option value="">Fuel</option>
+                                                    {% for item in fuelList %}
+                                                        <option value="{{ item.fuel }}">{{ item.fuel }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <div class="b-filter-slider ui-filter-slider">
+                                            <div class="b-filter-slider__title">Filter by Price</div>
+                                            <div class="b-filter-slider__main">
+                                                <div id="filterPrice"></div>
+                                                <div class="b-filter__row row">
+                                                    <div class="b-filter__item col-md-6 col-lg-12 col-xl-6">
+                                                        <input class="ui-select" id="input-with-keypress-0"
+                                                               v-model="minprice" type="number"/>
+                                                    </div>
+                                                    <div class="b-filter__item col-md-6 col-lg-12 col-xl-6">
+                                                        <input class="ui-select" id="input-with-keypress-1"
+                                                               v-model="maxprice" type="number"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="b-filter__reset btn btn-default btn-lg w-100"
+                                                @click="searchData">
+                                            Apply Filters
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </a>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="modal fade" id="ShowMessageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Welcome</h4>
+                </div>
+                <div class="modal-body">
+                    <h3 style="color: green;text-align: center">[[showMessage]]</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-primary" @click="readCar">My List of Favourites</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+{% endblock %}
+
+
+{% block page-scripts %}
+
+    <script src="/static/js/pageination.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            // 分割符: 修改vue中显示数据的语法, 防止与django冲突
+            delimiters: ['[[', ']]'],
+            components: {},
+            data: {
+                dataList: [],
+                curPage: 1,
+                pageSize: 10,
+                searchKey: "",
+                showMessage: "",
+                model: {
+                    total: 0,//总页数
+                    size: 4,//每页显示条目个数不传默认10
+                    page: 1,//当前页码
+                },
+                brand: "",
+                modelname: "",
+                volume: "",
+                gearbox: "",
+                year: "",
+                age: "",
+                fuel: "",
+                maxprice: 0,
+                minprice: 0
+
+
+            },
+            created() {
+                this.getDataList();
+            },
+            methods: {
+                async getDataList() {
+                    //获取汽车数据
+                    let data = {
+                        curPage: this.model.page,
+                        pageSize: this.model.size,
+                        searchKey: this.searchKey,
+                        brand: this.brand,
+                        model: this.modelname,
+                        volume: this.volume,
+                        gearbox: this.gearbox,
+                        year: this.year,
+                        age: this.age,
+                        fuel: this.fuel,
+                        minprice: this.minprice,
+                        maxprice: this.maxprice,
+
+                    };
+                    let res = await axiosget("{% url 'carslist' %}", data);
+                    console.log(res);
+                    if (res.code == 200) {
+                        this.dataList = res.data.items;
+                        this.model.total = res.data.sumNum;
+                    }
+                },
+                searchData() {
+                    this.model.page = 1;
+                    this.getDataList();
+                },
+
+                //页码切换执行方法
+                pageFn(val) {
+                    this.model.page = val;
+                    this.getDataList();
+                },
+                async addCar(item) {
+                    //加入购物车
+                    {% if  request.user.username == '' %}
+                        window.location.href = "{% url 'login' %}"
+                    {% endif %}
+                    let data = {id: item.id};
+                    let res = await axiospost("{% url 'shop_addshoppingcar' %}", data);
+                    console.log(res);
+                    if (res.code == 200) {
+
+                        this.showMessage = res.message;
+                        $('#ShowMessageModal').modal("show");
+                    }
+                },
+                async createBill(item) {
+
+                    //判断当前是否登录
+                    {% if  request.user.username == '' %}
+                        window.location.href = "{% url 'login' %}"
+                    {% endif %}
+                    //加入购物车
+                    let data = {id: item.id};
+                    let res = await axiospost("{% url 'shop_createmybills' %}", data);
+                    console.log(res);
+                    if (res.code == 200) {
+
+                        window.location.href = "{% url 'shop_shoppingbilldetail'  %}?id=" + res.data.id;
+                    }
+                },
+                readCar() {
+                    window.location.href = "{% url 'shop_shoppingcar'  %}";
+                }
+            },
+            computed: {
+                // 计算属性的 getter
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block page-styles %}
+    <link rel="stylesheet" href="/static/home/assets/css/master.css">
+    <!-- SWITCHER-->
+    <link href="/static/home/assets/plugins/switcher/css/switcher.css" rel="stylesheet" id="switcher-css">
+    <link href="/static/home/assets/plugins/switcher/css/color1.css" rel="alternate stylesheet" title="color1">
+    <link href="/static/home/assets/plugins/switcher/css/color2.css" rel="alternate stylesheet" title="color2">
+    <link href="/static/home/assets/plugins/switcher/css/color3.css" rel="alternate stylesheet" title="color3">
+
+    <style>
+        .pageination_align {
+            text-align: center
+        }
+
+        .pageination {
+            color: #48576a;
+            font-size: 12px;
+            display: inline-block;
+            user-select: none;
+        }
+
+        .pagination_page {
+            padding: 0 4px;
+            border: 1px solid #d1dbe5;
+            border-right: 0;
+            background: #fff;
+            font-size: 20px;
+            min-width: 35px;
+            height: 28px;
+            line-height: 28px;
+            cursor: pointer;
+            box-sizing: border-box;
+            text-align: center;
+            float: left;
+        }
+
+        .pagination_page_right {
+            border-right: 1px solid #d1dbe5;
+        }
+
+        .pagination_page:hover {
+            color: #20a0ff;
+        }
+
+        .disabled {
+            color: #e4e4e4 !important;
+            background-color: #fff;
+            cursor: not-allowed;
+        }
+
+        .pagination_page_active {
+            border-color: #20a0ff;
+            background-color: #20a0ff;
+            color: #fff !important;;
+            cursor: default;
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,27 @@
+/*------------------------------------------------------------------
+[Master Stylesheet]
+
+Project:  Isnaider
+Version:  1.0
+Assigned to:  WebNik
+Primary use:  Isnaider
+-------------------------------------------------------------------*/
+
+
+/* FONTS*/
+
+@import '../fonts/fontawesome-free-5.8.1/css/all.min.css';
+@import '../fonts/stroke/style.css';
+@import '../fonts/elegant/style.css';
+@import '../fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css';
+@import '../fonts/simple-line-icons/css/simple-line-icons.css';
+@import '../fonts/flaticon/font/flaticon.css';
+
+
+
+/* MAIN CSS */
+
+@import 'main.css';
+@import 'color.css';
+
+
